@@ -53,4 +53,46 @@ describe('Auto Assign', function() {
         expect(body.moderatorAssigned).to.equal(moderator.body._id);        
     });
 
+    it('PASS, create multiple moderator then create multiple report, check assignment', async () => {
+        
+        let moderator1 = await request(app).post('/moderator').send({ "name": "1" });
+        let moderator2 = await request(app).post('/moderator').send({ "name": "2" });
+        let report1 = await request(app).post('/user/report').send({ "message": "1" });
+        let moderator3 = await request(app).post('/moderator').send({ "name": "3" });
+        let moderator4 = await request(app).post('/moderator').send({ "name": "4" });
+        let report2 = await request(app).post('/user/report').send({ "message": "2" });
+        let report3 = await request(app).post('/user/report').send({ "message": "3" });
+        let report4 = await request(app).post('/user/report').send({ "message": "4" });
+
+        expect(moderator1.body).to.not.contain.property('reportAssigned');
+        expect(moderator2.body).to.not.contain.property('reportAssigned');
+        expect(report1.body).to.contain.property('moderatorAssigned');
+        expect(moderator3.body).to.not.contain.property('reportAssigned');
+        expect(moderator4.body).to.not.contain.property('reportAssigned');
+        expect(report2.body).to.contain.property('moderatorAssigned');
+        expect(report3.body).to.contain.property('moderatorAssigned');
+        expect(report4.body).to.contain.property('moderatorAssigned');
+    });
+
+    it('PASS, create multiple report then create multiple moderator, check assignment', async () => {
+
+        let report1 = await request(app).post('/user/report').send({ "message": "1" });
+        let report2 = await request(app).post('/user/report').send({ "message": "2" });        
+        let moderator1 = await request(app).post('/moderator').send({ "name": "1" });
+        let report3 = await request(app).post('/user/report').send({ "message": "3" });
+        let report4 = await request(app).post('/user/report').send({ "message": "4" });
+        let moderator2 = await request(app).post('/moderator').send({ "name": "2" });
+        let moderator3 = await request(app).post('/moderator').send({ "name": "3" });
+        let moderator4 = await request(app).post('/moderator').send({ "name": "4" });
+
+        expect(report1.body).to.not.contain.property('moderatorAssigned');
+        expect(report2.body).to.not.contain.property('moderatorAssigned');
+        expect(moderator1.body).to.contain.property('reportAssigned');
+        expect(report3.body).to.not.contain.property('moderatorAssigned');
+        expect(report4.body).to.not.contain.property('moderatorAssigned');
+        expect(moderator2.body).to.contain.property('reportAssigned');
+        expect(moderator3.body).to.contain.property('reportAssigned');
+        expect(moderator4.body).to.contain.property('reportAssigned');
+    });
+
 });
