@@ -7,11 +7,17 @@ const ModeratorRoutes = require('./routes/moderator.js');
 let bodyParser = require('body-parser');
 app.use(bodyParser.json())
 
+let path = require('path');
+
 error = function error(status, msg) {   //global error function
     var err = new Error(msg);
     err.status = status;
     return err;
 }
+
+app.get('/', (req, res, next) => {
+    res.sendFile(path.join(__dirname + '/html/index.html'));
+});
 
 app.use('/user', UserRoutes);
 
